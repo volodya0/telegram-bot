@@ -1,21 +1,28 @@
 const { Scenes } = require('telegraf')
 const { Keyboard, Key } = require('telegram-keyboard')
 const { evaluate } = require('mathjs')
-const backKeyboard = require('../backKeyboard')
+
+const backKeyboard = Keyboard.reply(['Back to main'])
 
 const Calculator = new Scenes.WizardScene('Calculator',
 
   (ctx) => {
-    ctx.reply('Calculate mode');
-    ctx.reply('Enter expression', backKeyboard)
+    ctx.reply('Calculate mode, enter expression', backKeyboard);
     return ctx.wizard.next(); 
   },
 
   (ctx) => {
     if (ctx.message.text === 'Back to main') {
-      ctx.scene.enter('Main'); 
+      ctx.scene.enter('Main') 
     }else{
-      ctx.reply(evaluate(ctx.message.text))
+      let rez
+      try {
+        let exp = (ctx.message.text + '').replace(/,/g, '.')
+        rez = `${exp} = ${evaluate(exp)}`
+      } catch (error) {
+        rez = 'Incorrect expression'     
+      }
+      ctx.reply(rez,  backKeyboard)
     }
   },
 

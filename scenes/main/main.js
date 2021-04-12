@@ -1,7 +1,7 @@
 const { Scenes } = require('telegraf')
-const { Keyboard, Key } = require('telegram-keyboard')
+const { Keyboard } = require('telegram-keyboard')
 
-const mainKeyboard = Keyboard.reply(['Calculator', 'Scales'])
+const mainKeyboard = Keyboard.make(['Calculator', 'Scales', 'Random', 'Currencies'],{pattern:[3,3]}).reply()
 
 const Main = new Scenes.WizardScene('Main',
   (ctx) => {
@@ -14,6 +14,12 @@ const Main = new Scenes.WizardScene('Main',
         ctx.scene.enter(ctx.message.text)
       break;
       case 'Scales':
+        ctx.scene.enter(ctx.message.text)
+      break;
+      case 'Random':
+        ctx.scene.enter(ctx.message.text)
+      break; 
+      case 'Currencies':
         ctx.scene.enter(ctx.message.text)
       break;
       default:

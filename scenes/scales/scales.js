@@ -15,6 +15,10 @@ const paramsKeyboard = Keyboard.make([
   'Change params', 'Back to main'
 ]).reply()
 
+const separateKeyboard = Keyboard.make([
+  'Separate < 3 > ', 'Separate < 4 > ',
+  'Change params', 'Back to main'
+], {columns:2}).reply()
 
 
 const all = ['2', '8', '10', '16']
@@ -34,7 +38,7 @@ const Scales = new Scenes.WizardScene('Scales',
     const params = ctx.message.text.split(' ')
     if(!valid(params[0], params[2])){
       ctx.reply('Params not valid')
-      ctx.wizard.selectStep(0)
+      ctx.scene.reenter()
     }
     ctx.reply(`Enter number (${params[0]} system)`, paramsKeyboard)
     ctx.session.params = [params[0], params[2]]
@@ -47,23 +51,25 @@ const Scales = new Scenes.WizardScene('Scales',
       ctx.scene.enter('Scales')
     else if(ctx.message.text === 'Back to main')
       ctx.scene.enter('Main')
+    else if(ctx.message.text.split(' ')[0] === 'Separate')
+      ctx.reply(`Separated: ${separate('' + ctx.scene.session.value, ctx.message.text.split(' ')[2])}`, separateKeyboard)
     else{
-
       const [a, b, num] = [...ctx.session.params, ctx.message.text]
       const rez = convert(a, b, num)
-      if(rez === 'Incorrect value')
+      ctx.state.lastRez = rez
+      if(rez === 'Incorrect value'){
         ctx.reply(`${num} (${a}) :>> Incorrect value`)
-      else
-        ctx.reply(`${num} (${a}) = ${rez} (${b})`)
-      ctx.wizard.selectStep(2)
-
+      }else{
+        ctx.scene.session.value = rez
+        ctx.reply(`${num} (${a}) = ${rez} (${b})`, separateKeyboard)
+      }
     }
   },
 );
 
 module.exports.Scales = Scales
 
-function convert(from, to, number){ 
+function convert(from, to, number){  
   try {
     number = number + ''
     const ns = new NumberSystem(+from)
@@ -85,4 +91,13 @@ function convert(from, to, number){
   } catch (error) {
     return 'Incorrect value'
   }
+}
+
+function separate(string, count, separator = ' '){
+  console.log('count :>> ', count);
+  return string.split('').reverse().map((item, index) => {
+    if(index % +count === 0)
+      return item + separator
+    return item
+  }).reverse().join('')
 }
