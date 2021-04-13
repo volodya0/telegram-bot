@@ -91,7 +91,7 @@ const Currencies = new Scenes.WizardScene('Currencies',
         ctx.reply('Incorrect value')
       }
     }    
-  }
+  } 
   
 
 );
