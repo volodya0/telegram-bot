@@ -5,7 +5,7 @@
   "main": "bot.js",
   "scripts": {
     "n": "nodemon ./bot.js",
-    "start": "node bot.js"
+    "start": "node ./bot.js"
   },
   "author": "volodauzuk02@gmail.com",
   "license": "ISC",
