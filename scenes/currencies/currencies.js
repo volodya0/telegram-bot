@@ -30,7 +30,7 @@ const Currencies = new Scenes.WizardScene('Currencies',
       ctx.scene.reenter() 
     }else{
       ctx.reply(`From = ${from}, choose <to> currency`, 
-        Keyboard.make(['ALL currencies', ...all.filter(c => c !== from)], {pattern: [1, 3, 3, 3]}).reply())
+        Keyboard.make([...all.filter(c => c !== from)], {pattern: [4, 4, 4]}).reply())
       ctx.scene.session.from = from
       ctx.wizard.next()
     } 
@@ -45,30 +45,31 @@ const Currencies = new Scenes.WizardScene('Currencies',
       ctx.wizard.selectStep(0)  
     }else{
       ctx.reply('Wait, getting data...', Keyboard.reply([' ']))
-      fetch(`${CurrenciesURL}/latest?access_key=${CurrenciesAPI}&symbols=${ctx.scene.session.from}`)
+        fetch(`${CurrenciesURL}/latest?access_key=${CurrenciesAPI}&symbols=${ctx.scene.session.from}`)
         .then(res => res.json())
         .then(from => {
           fetch(`${CurrenciesURL}/latest?access_key=${CurrenciesAPI}&symbols=${to}`)
+            .catch(err => {ctx.reply('Error'), ctx.scene.reenter()})
             .then(res => res.json())
             .then(to => {
               const nameFrom = Object.keys(from.rates)[0]
               const priceFrom = Object.values(from.rates)[0]
               const nameTo = Object.keys(to.rates)[0]
               const priceTo = Object.values(to.rates)[0]
-              const finalPrice = (priceTo / priceFrom).toFixed(3)
+              const finalPrice = priceTo / priceFrom
               ctx.scene.session.finalPrice = finalPrice
               ctx.scene.session.nameFrom = nameFrom
               ctx.scene.session.nameTo = nameTo 
-              ctx.reply(`1 ${nameFrom} = ${finalPrice} ${nameTo}`)
+              ctx.reply(`1 ${nameFrom} = ${finalPrice.toFixed(3)} ${nameTo}`)
               ctx.reply('Enter your sum...', valuesKeyboard)
               ctx.wizard.next()
             }
           )
         }
       )
-    }
+    } 
   }, 
-  
+
   (ctx) => {
     const {nameFrom, nameTo, finalPrice} = ctx.scene.session
     if(ctx.message.text === 'Back to main'){

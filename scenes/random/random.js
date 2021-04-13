@@ -19,7 +19,7 @@ const Random = new Scenes.WizardScene('Random',
 
   (ctx) => {
     ctx.reply('Random mode, enter any limits ( min max )', randomKeyboard);
-    return ctx.wizard.next(); 
+    ctx.wizard.next(); 
   },
 
   (ctx) => {
