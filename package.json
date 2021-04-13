@@ -5,7 +5,7 @@
   "main": "bot.js",
   "scripts": {
     "n": "nodemon ./bot.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node bot.js"
   },
   "author": "volodauzuk02@gmail.com",
   "license": "ISC",
@@ -20,5 +20,8 @@
   },
   "devDependencies": {
     "nodemon": "^2.0.7"
+  },
+  "engines": {
+    "node": "14.16.1"
   }
 }
