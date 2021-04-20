@@ -1,6 +1,6 @@
 const { Scenes } = require('telegraf')
 const { Keyboard } = require('telegram-keyboard')
-const { gitURL, myChatId } = require('../../config')
+const { gitURL, myChatId } = require('../config')
 
 const mainKeyboard = Keyboard.make([
     'Calculator', 'Scales', 'Random', 
@@ -38,5 +38,5 @@ const Main = new Scenes.WizardScene('Main',
       break;
     }
   },  
-);
+);    
 module.exports.Main = Main

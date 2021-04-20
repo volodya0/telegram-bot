@@ -1,6 +1,6 @@
 const { Scenes } = require('telegraf')
-var random = require('random-number');
 const { Keyboard } = require('telegram-keyboard')
+const { random } = require('../utils/utils')
 
 const backKeyboard = Keyboard.reply(['Back to main'])
 const randomKeyboard = Keyboard.make([
@@ -39,7 +39,7 @@ const Random = new Scenes.WizardScene('Random',
 
 
       try {
-        rez = `random [ ${params[0]} ... ${params[1]} ]  = ${getRandom(+params[0], +params[1])}`
+        rez = `random [ ${params[0]} ... ${params[1]} ]  = ${random(+params[0], +params[1])}`
       } catch (error) {
         rez = 'Incorrect expression'     
       }
@@ -53,10 +53,3 @@ const Random = new Scenes.WizardScene('Random',
 
 );
 module.exports.Random = Random
-
-function getRandom(min, max, integer = true){
-  if(!max)
-    return random({min : 0, max : min, integer })
-  
-  return random({min, max, integer})
-}

@@ -5,7 +5,7 @@
 node_modules
 /src/config.js
 /config.js
-config.js
+#config.js
 
 
 # testing
@@ -26,3 +26,4 @@ yarn-debug.log*
 yarn-error.log*
 .vercel
 vercel.json
+Procfile

@@ -1,8 +1,6 @@
 const { Scenes } = require('telegraf')
-const NumberSystem = require('number-system');
 const { Keyboard } = require('telegram-keyboard')
-const backKeyboard = require('../backKeyboard');
-const { re } = require('mathjs');
+const { convert, separate } = require('../utils/utils')
 
 const scalesKeyboard = Keyboard.make([
     '2 to 8', '10 to 2', '8 to 2', '16 to 2', 
@@ -69,35 +67,3 @@ const Scales = new Scenes.WizardScene('Scales',
 
 module.exports.Scales = Scales
 
-function convert(from, to, number){  
-  try {
-    number = number + ''
-    const ns = new NumberSystem(+from)
-    switch (to) {
-      case '2':
-        return ns.bin(number)
-      case '8':
-        return ns.oct(number)
-      case '10':
-        return ns.dec(number)
-      case '16':
-        const rez = ns.hex(number)
-        if (rez.slice(0, 2) === '0x')
-          return rez.slice(2, rez.length).toUpperCase()
-        return rez
-      default:
-        return 'Incorrect value';
-    }
-  } catch (error) {
-    return 'Incorrect value'
-  }
-}
-
-function separate(string, count, separator = ' '){
-  console.log('count :>> ', count);
-  return string.split('').reverse().map((item, index) => {
-    if(index % +count === 0)
-      return item + separator
-    return item
-  }).reverse().join('')
-}

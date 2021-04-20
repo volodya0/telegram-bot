@@ -1,6 +1,6 @@
 const { Scenes } = require('telegraf')
 const { Keyboard, Key } = require('telegram-keyboard')
-const { evaluate } = require('mathjs')
+const { calculate } = require('../utils/utils')
 
 const backKeyboard = Keyboard.reply(['Back to main'])
 
@@ -18,7 +18,7 @@ const Calculator = new Scenes.WizardScene('Calculator',
       let rez
       try {
         let exp = (ctx.message.text + '').replace(/,/g, '.')
-        rez = `${exp} = ${evaluate(exp)}`
+        rez = `${exp} = ${calculate(exp)}`
       } catch (error) {
         rez = 'Incorrect expression'     
       }
