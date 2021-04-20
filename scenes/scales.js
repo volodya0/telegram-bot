@@ -53,13 +53,12 @@ const Scales = new Scenes.WizardScene('Scales',
       ctx.reply(`Separated: ${separate('' + ctx.scene.session.value, ctx.message.text.split(' ')[2])}`, separateKeyboard)
     else{
       const [a, b, num] = [...ctx.session.params, ctx.message.text]
-      const rez = convert(a, b, num)
-      ctx.state.lastRez = rez
-      if(rez === 'Incorrect value'){
+      const res = convert(a, b, num)
+      if(res === 'Incorrect value'){
         ctx.reply(`${num} (${a}) :>> Incorrect value`)
       }else{
-        ctx.scene.session.value = rez
-        ctx.reply(`${num} (${a}) = ${rez} (${b})`, separateKeyboard)
+        ctx.scene.session.value = res
+        ctx.reply(res ,separateKeyboard)
       }
     }
   },

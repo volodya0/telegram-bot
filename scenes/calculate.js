@@ -15,14 +15,7 @@ const Calculator = new Scenes.WizardScene('Calculator',
     if (ctx.message.text === 'Back to main') {
       ctx.scene.enter('Main') 
     }else{
-      let rez
-      try {
-        let exp = (ctx.message.text + '').replace(/,/g, '.')
-        rez = `${exp} = ${calculate(exp)}`
-      } catch (error) {
-        rez = 'Incorrect expression'     
-      }
-      ctx.reply(rez,  backKeyboard)
+      ctx.reply(calculate(ctx.message.text),  backKeyboard)
     }
   },
 
