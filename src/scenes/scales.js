@@ -1,6 +1,7 @@
 const { Scenes } = require('telegraf')
 const { Keyboard } = require('telegram-keyboard')
-const { convert, separate } = require('../utils/utils')
+const { scalesDec } = require('../utils/scales')
+const { separate } = require('../utils/separate')
 
 const scalesKeyboard = Keyboard.make([
     '2 to 8', '10 to 2', '8 to 2', '16 to 2', 
@@ -53,8 +54,8 @@ const Scales = new Scenes.WizardScene('Scales',
       ctx.reply(`Separated: ${separate('' + ctx.scene.session.value, ctx.message.text.split(' ')[2])}`, separateKeyboard)
     else{
       const [a, b, num] = [...ctx.session.params, ctx.message.text]
-      const res = convert(a, b, num)
-      if(res === 'Incorrect value'){
+      const res = scalesDec(a, b, num)
+      if(res === null){
         ctx.reply(`${num} (${a}) :>> Incorrect value`)
       }else{
         ctx.scene.session.value = res

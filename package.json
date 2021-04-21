@@ -4,7 +4,7 @@
   "description": "bot",
   "main": "bot.js",
   "scripts": {
-    "n": "nodemon ./bot.js",
+    "n": "nodemon ./src/bot.js",
     "start": "node ./bot.js"
   },
   "author": "volodauzuk02@gmail.com",
@@ -15,6 +15,7 @@
     "node-fetch": "2.6.0",
     "number-system": "1.0.2",
     "random-number": "0.0.9",
+    "stringify-object": "^3.3.0",
     "telegraf": "4.3.0",
     "telegram-keyboard": "2.2.2"
   },

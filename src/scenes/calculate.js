@@ -1,6 +1,6 @@
 const { Scenes } = require('telegraf')
 const { Keyboard, Key } = require('telegram-keyboard')
-const { calculate } = require('../utils/utils')
+const { calculateDec } = require('../utils/calculate')
 
 const backKeyboard = Keyboard.reply(['Back to main'])
 
@@ -15,7 +15,7 @@ const Calculator = new Scenes.WizardScene('Calculator',
     if (ctx.message.text === 'Back to main') {
       ctx.scene.enter('Main') 
     }else{
-      ctx.reply(calculate(ctx.message.text),  backKeyboard)
+      ctx.reply(calculateDec(ctx.message.text)??'Incorrect expression',  backKeyboard)
     }
   },
 

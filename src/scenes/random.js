@@ -1,8 +1,7 @@
 const { Scenes } = require('telegraf')
 const { Keyboard } = require('telegram-keyboard')
-const { random } = require('../utils/utils')
+const { randomDec } = require('../utils/random')
 
-const backKeyboard = Keyboard.reply(['Back to main'])
 const randomKeyboard = Keyboard.make([
     '1 - 2', '1 - 5', '1 - 6', '1 - 10', '1 - 100',
     'max random',
@@ -36,14 +35,7 @@ const Random = new Scenes.WizardScene('Random',
         params =  ctx.message.text.split(' ').filter(c => ![' ', '-'].includes(c))
       }
 
-
-
-      try {
-        rez = `random [ ${params[0]} ... ${params[1]} ]  = ${random(+params[0], +params[1])}`
-      } catch (error) {
-        rez = 'Incorrect expression'     
-      }
-      ctx.reply(rez,  Keyboard.make([
+      ctx.reply(randomDec(+params[0], +params[1])??'Incorrect limits',  Keyboard.make([
         `Repeat [ ${params[0]} ... ${params[1]} ]`,
         '1 - 2', '1 - 5', '1 - 6', '1 - 10', '1 - 100',
         'max random', 'Back to main'

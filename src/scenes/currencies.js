@@ -1,6 +1,6 @@
 const { Scenes } = require('telegraf')
 const { Keyboard } = require('telegram-keyboard')
-const { CurrenciesAPI, CurrenciesURL } = require('../config')
+const { CurrenciesAPI, CurrenciesURL } = require('../../config')
 const fetch = require('node-fetch');
 const { typeOf } = require('mathjs');
 
