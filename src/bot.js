@@ -1,5 +1,5 @@
 const { Telegraf, Scenes, session} = require('telegraf')
-const { Token, myChatId } = require('../config')
+const { Token, myChatId, loggerToken } = require('../config')
 const { Main } = require('./scenes/main')
 const { Calculator } = require('./scenes/calculate')
 const { Scales } = require('./scenes/scales')
@@ -7,7 +7,8 @@ const { Random } = require('./scenes/random')
 const { Currencies } = require('./scenes/currencies')
 const { Translate } = require('./scenes/translate')
 const { inlineHandler } = require('./inline')
-const { logger } = require('./logger')
+const { logger, errorLog } = require('./logger')
+const { onStart } = require('./utils/currencies')
 
 const bot = new Telegraf(Token)
 
@@ -24,8 +25,14 @@ bot.command('start', (ctx) => ctx.scene.enter('Main'))
 bot.on('inline_query', inlineHandler) 
 bot.on('message', (ctx) => ctx.scene.enter('Main')) 
 
-bot.catch((err, ctx) => {
-  ctx.telegram.sendMessage(myChatId, err)
-  console.log('err :>> ', err);
-})
+bot.catch(errorLog)
 bot.launch()  
+
+//for development  
+bot.telegram.sendMessage(myChatId, 'Working...');
+
+(async () => {
+  let res = await onStart('usd', 'uah', 1000)
+  console.log('res :>> ', res);
+
+})()

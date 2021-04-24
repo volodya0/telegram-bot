@@ -1,10 +1,8 @@
 const { Scenes } = require('telegraf')
 const { Keyboard } = require('telegram-keyboard')
-const { CurrenciesAPI, CurrenciesURL } = require('../../config')
-const fetch = require('node-fetch');
-const { typeOf } = require('mathjs');
+const { convertCurrenciesObj } = require('../utils/currencies')
 
-const all = [
+const all =[
   'USD', 'EUR', 'RUB', 'UAH', 'JPY', 'GBP', 'AMD', 'BYN', 'KGS', 'KZT', 'TJS', 'UZS'
 ] 
 
@@ -30,66 +28,68 @@ const Currencies = new Scenes.WizardScene('Currencies',
       ctx.scene.reenter() 
     }else{
       ctx.reply(`From = ${from}, choose <to> currency`, 
-        Keyboard.make([...all.filter(c => c !== from)], {pattern: [4, 4, 4]}).reply())
+        Keyboard.make([...all.filter(c => c !== from), 'Back to main'], {pattern: [4, 4, 4]}).reply())
       ctx.scene.session.from = from
       ctx.wizard.next()
     } 
   },
 
-  (ctx) => {
+  async (ctx) => {
     const to = ctx.message.text
     if(ctx.message.text === 'Back to main'){
+
       ctx.scene.enter('Main')
+
     }else if (!all.includes(to)) {  
+
       ctx.reply('Unknown value')
       ctx.wizard.selectStep(0)  
+
     }else{
+
       ctx.reply('Wait, getting data...', Keyboard.reply([' ']))
-        fetch(`${CurrenciesURL}/latest?access_key=${CurrenciesAPI}&symbols=${ctx.scene.session.from}`)
-        .then(res => res.json())
-        .then(from => {
-          fetch(`${CurrenciesURL}/latest?access_key=${CurrenciesAPI}&symbols=${to}`)
-            .catch(err => {ctx.reply('Error'), ctx.scene.reenter()})
-            .then(res => res.json())
-            .then(to => {
-              const nameFrom = Object.keys(from.rates)[0]
-              const priceFrom = Object.values(from.rates)[0]
-              const nameTo = Object.keys(to.rates)[0]
-              const priceTo = Object.values(to.rates)[0]
-              const finalPrice = priceTo / priceFrom
-              ctx.scene.session.finalPrice = finalPrice
-              ctx.scene.session.nameFrom = nameFrom
-              ctx.scene.session.nameTo = nameTo 
-              ctx.reply(`1 ${nameFrom} = ${finalPrice.toFixed(3)} ${nameTo}`)
-              ctx.reply('Enter your sum...', valuesKeyboard)
-              ctx.wizard.next()
-            }
-          )
-        }
-      )
+      const res = await convertCurrenciesObj(ctx.scene.session.from, to, 1)
+      if(res){
+        ctx.wizard.next()
+        ctx.reply(res.convertDec(), valuesKeyboard)
+        ctx.scene.session.convert = res.convertDec
+        ctx.scene.session.swapped = res.swappedConvertDec
+      }else{
+        ctx.reply('Error')
+        ctx.scene.reenter()
+      }
+      
     } 
   }, 
 
   (ctx) => {
-    const {nameFrom, nameTo, finalPrice} = ctx.scene.session
+
     if(ctx.message.text === 'Back to main'){
+
       ctx.scene.enter('Main')
+
     }else if(ctx.message.text === 'Change currencies'){
+
       ctx.scene.reenter()
+
     }else if(ctx.message.text === 'Swap'){
-      ctx.scene.session.nameFrom = nameTo
-      ctx.scene.session.nameTo = nameFrom
-      ctx.scene.session.finalPrice = 1 / finalPrice
+
+      const swapped = ctx.scene.session.swapped
+      ctx.scene.session.swapped = ctx.scene.session.convert
+      ctx.scene.session.convert = swapped
       const sum = ctx.scene.session.sum || 1
-      ctx.reply(`${sum} ${nameTo} = ${((1 / finalPrice)*sum).toFixed(3)} ${nameFrom}`)
+      ctx.reply(swapped(sum))
+
     }else{
+
       const sum = parseInt((ctx.message.text).split(' ').join(''), 10)
       if(sum){
         ctx.scene.session.sum = sum
-        ctx.reply(`${sum} ${nameFrom} = ${(finalPrice*sum).toFixed(3)} ${nameTo}`, valuesKeyboard)
+        ctx.reply(ctx.scene.session.convert(sum), valuesKeyboard)
       }else{
         ctx.reply('Incorrect value')
       }
+
     }    
   } 
   
