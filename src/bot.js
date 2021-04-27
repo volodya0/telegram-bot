@@ -8,7 +8,7 @@ const { Currencies } = require('./scenes/currencies')
 const { Translate } = require('./scenes/translate')
 const { inlineHandler } = require('./inline')
 const { logger, errorLog } = require('./logger')
-const { onStart } = require('./utils/currencies')
+const { onStart } = require('./utils/translate')
 
 const bot = new Telegraf(Token)
 
@@ -31,8 +31,3 @@ bot.launch()
 //for development  
 bot.telegram.sendMessage(myChatId, 'Working...');
 
-(async () => {
-  let res = await onStart('usd', 'uah', 1000)
-  console.log('res :>> ', res);
-
-})()

@@ -58,7 +58,7 @@ const Currencies = new Scenes.WizardScene('Currencies',
         ctx.reply('Error')
         ctx.scene.reenter()
       }
-      
+
     } 
   }, 
 
@@ -93,8 +93,6 @@ const Currencies = new Scenes.WizardScene('Currencies',
     }    
   } 
   
-  
-
 );
 module.exports.Currencies = Currencies
 

@@ -1,8 +1,9 @@
 const { calculateDec } = require('./utils/calculate')
 const { randomDec } = require('./utils/random')
 const { convert } = require('./utils/scales')
+const { translateDec } = require('./utils/translate')
 
-function inlineHandler(ctx){
+async function inlineHandler(ctx){
 
   const query = ctx.inlineQuery.query
   const params = query.split(' ')
@@ -22,6 +23,10 @@ function inlineHandler(ctx){
 
     case 's':
       results.push(...convert(exp))
+    break;
+
+    case 't':
+      results.push(await translateDec(exp))
     break;
   
     default:
